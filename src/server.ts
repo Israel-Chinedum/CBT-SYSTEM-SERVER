@@ -2,8 +2,10 @@ import express from "express";
 import { connectToDB } from "./database/db.config.js";
 import { userController } from "./modules/user/user.controller.js";
 import { authController } from "./modules/auth/auth.controller.js";
+import cors from "cors";
 
 const app = express();
+app.use(cors({}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
