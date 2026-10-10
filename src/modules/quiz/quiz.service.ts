@@ -2,8 +2,8 @@ import type { SUBJECT } from "../../types/subject.js";
 import { getQuizData } from "./quiz-utils/get-quiz-data.js";
 
 class QuizService {
-  getQuestions(subject: SUBJECT) {
-    return getQuizData(subject);
+  getQuestions(subject: SUBJECT, limit: number) {
+    return getQuizData(subject, limit);
   }
 }
 

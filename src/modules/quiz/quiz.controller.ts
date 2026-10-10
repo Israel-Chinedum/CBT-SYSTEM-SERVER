@@ -5,29 +5,41 @@ import type { SUBJECT } from "../../types/subject.js";
 
 export const quizController = async (app: Express) => {
   const guard = authService.authGuard;
-  app.get("/quiz/questions", authService.authGuard, (req, res) => {
+  app.get("/quiz/questions", authService.authGuard, async (req, res) => {
     try {
       if (!req.query.subject) {
         return res.status(400).json("Subject is missing!");
       }
 
       const subject = req.query.subject as SUBJECT;
+      let limit!: number;
+
+      if (req.query.limit) {
+        if (!Number.isNaN(Number(req.query.limit))) {
+          limit = Number(req.query.limit);
+        } else {
+          return res.status(400).json("Invalid limit!");
+        }
+      }
 
       if (
         !["chemistry", "physics", "english", "mathematics"].includes(
           subject.toLocaleLowerCase(),
         )
       ) {
-        return res.status(400).json("Invalid subject!");
+        return res.status(400).json(`${subject} is not available!`);
       }
 
-      if (!["mathematics", "english"].includes(subject.toLocaleLowerCase())) {
-        return res.json(`${subject} is not yet available!`);
-      }
-
-      res.json(
-        quizService.getQuestions(subject.toLocaleLowerCase() as SUBJECT),
+      const data = await quizService.getQuestions(
+        subject.toLocaleLowerCase() as SUBJECT,
+        limit,
       );
+
+      if (Object.keys(data).includes("error")) {
+        res.status(500).json(data);
+      } else {
+        res.json(data);
+      }
     } catch (error) {
       console.log(error);
       res.status(500).json("An error occured!");
