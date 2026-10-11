@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { valReq } from "../../utilities/dto.util.js";
-import { SigninDTO } from "./auth-dto/sign-in-dto.js";
+import { SigninDTO } from "./auth-dto/sign-in.dto.js";
 import { authService } from "./auth.service.js";
 
 export const authController = (app: Express) => {

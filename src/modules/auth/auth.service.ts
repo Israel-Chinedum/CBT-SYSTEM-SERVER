@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { userModel } from "../user/user.schema.js";
 import bcrypt from "bcrypt";
-import type { SigninDTO } from "./auth-dto/sign-in-dto.js";
+import type { SigninDTO } from "./auth-dto/sign-in.dto.js";
 import { generateToken } from "./auth-util/generate-token.util.js";
 import { authGuard } from "./auth-util/authGuard.util.js";
 

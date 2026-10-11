@@ -35,6 +35,7 @@ export const getQuizData = async (subject: SUBJECT, limit: number = 40) => {
     const quizQuestions = [];
 
     for (let i = 0; i < questionBank.questions.length; i++) {
+      delete questionBank.questions[i].answer;
       quizQuestions.push(questionBank.questions[i]);
       if (i === limit - 1) break;
     }

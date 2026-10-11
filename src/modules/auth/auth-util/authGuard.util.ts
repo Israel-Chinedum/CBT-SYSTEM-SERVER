@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import type { jwtPayload } from "../../../types/jwt-payload.js";
 
 export const authGuard = async (
   req: Request,
