@@ -41,10 +41,10 @@ export const getScore = async (answers: CBT_ANSWERS) => {
         return "error";
       }
 
-      const data = await response.json();
+      const questionBank = await response.json();
 
       for (let userAns of subAns) {
-        for (let ans of data) {
+        for (let ans of questionBank.questions) {
           if (ans.id === userAns.id) {
             if (userAns.answer.trim() === ans.answer.trim()) {
               score += equalMark;
@@ -106,10 +106,10 @@ export const getScore = async (answers: CBT_ANSWERS) => {
 
     const responseData = {
       unit_scores: {
-        english: eng_score,
-        mathematics: math_score,
-        chemistry: chem_score,
-        physics: phy_score,
+        english: eng_score.score,
+        mathematics: math_score.score,
+        chemistry: chem_score.score,
+        physics: phy_score.score,
       },
       average:
         (eng_score.score +

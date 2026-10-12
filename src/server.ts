@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express from "express";
 import { connectToDB } from "./database/db.config.js";
 import { userController } from "./modules/user/user.controller.js";
