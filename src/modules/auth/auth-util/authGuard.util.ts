@@ -9,13 +9,12 @@ export const authGuard = async (
   const token = req.headers.authorization;
   if (!token) return res.status(403).json({ error: "Token not found!" });
 
-  const user = jwt.verify(token, process.env.TOKEN_SECRET!);
-
-  if (!user) {
-    return res.status(403).json({ error: "Invalid or expired token!" });
+  try {
+    const user = jwt.verify(token, process.env.TOKEN_SECRET!);
+    req.user = user;
+  } catch {
+    return res.status(401).json({ error: "Invalid or expired token!" });
   }
-
-  req.user = user;
 
   next();
 };
