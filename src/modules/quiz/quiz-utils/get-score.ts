@@ -1,6 +1,8 @@
 import type { CBT_ANSWERS } from "../../../types/answer.js";
+import type { jwtPayload } from "../../../types/jwt-payload.js";
+import { quizHistoryModel } from "../schema/quiz-history.schema.js";
 
-export const getScore = async (answers: CBT_ANSWERS) => {
+export const getScore = async (answers: CBT_ANSWERS, user: jwtPayload) => {
   try {
     const math = [];
     const eng = [];
@@ -104,7 +106,7 @@ export const getScore = async (answers: CBT_ANSWERS) => {
       }
     }
 
-    const responseData = {
+    const performanceData = {
       unit_scores: {
         english: eng_score.score,
         mathematics: math_score.score,
@@ -119,16 +121,26 @@ export const getScore = async (answers: CBT_ANSWERS) => {
         4,
       total_score:
         eng_score.score + math_score.score + chem_score.score + phy_score.score,
-      errors: {
+      unit_errors: {
         english: eng_score.error,
         mathematics: math_score.error,
         chemistry: chem_score.error,
         physics: phy_score.error,
       },
-      total_errors: errCount,
+      total_unit_errors: errCount,
+      historyError: false,
     };
 
-    return responseData;
+    try {
+      await new quizHistoryModel({
+        email: user.email,
+        ...performanceData,
+      }).save();
+    } catch (error) {
+      console.log(error);
+      performanceData.historyError = true;
+    }
+    return performanceData;
   } catch (error) {
     console.log(error);
     return { error: "An error occured!" };

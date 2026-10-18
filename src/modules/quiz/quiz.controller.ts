@@ -46,7 +46,7 @@ export const quizController = async (app: Express) => {
       }
     } catch (error) {
       console.log(error);
-      res.status(500).json("An error occured!");
+      res.status(500).json({ error: "An error occured!" });
     }
   });
 
@@ -56,7 +56,11 @@ export const quizController = async (app: Express) => {
     authService.authGuard,
     valReq(QuizAnswersDTO),
     async (req, res) => {
-      const data = await quizService.scoreUser(req.body.answers);
+      if (!req.user) {
+        console.log("Unknown user!", req.user);
+        return res.status(500).json({ error: "An error occured!" });
+      }
+      const data = await quizService.scoreUser(req.body.answers, req.user);
       if (Object.keys(data).includes("error")) {
         res.status(500).json(data);
       } else {
@@ -64,4 +68,20 @@ export const quizController = async (app: Express) => {
       }
     },
   );
+
+  // ====== SEND QUIZ HISTORY ======
+  app.get("/quiz/get-history", authService.authGuard, async (req, res) => {
+    if (!req.user) {
+      console.log("Unknown user!", req.user);
+      return res.status(500).json({ error: "An error occured!" });
+    }
+
+    const data = await quizService.quizHistory(req.user);
+
+    if (Object.keys(data).includes("error")) {
+      res.status(500).json(data);
+    } else {
+      res.json(data);
+    }
+  });
 };
